@@ -1,0 +1,136 @@
+npm --proxy http://userid:pass@proxy_address:8080 install -g @angular/cli --without-ssl --insecure
+git config --global http.proxy http://userid:pass@proxy_address:8080
+
+Angular Directives - 
+1)component directive - Component directive is used to create HTML template
+2)attribute directive - 
+	changes the appearance and behavior of DOM element.To behave our directive like attribute directive, we can use ElementRef to change 
+	appearance.To listen event we can use @HostListener() decorator.
+	1.simple attribute directive 2.Attribute Directive using @Input() 3.Attribute Directive using @HostListener() 
+	
+3)structural directive - 
+	changes the DOM layout by adding and removing DOM elements.To behave our directive like structural directive, we can use TemplateRef and ViewContainerRef.
+	steps to create custom structural directive - 
+	1. Create a class decorated with @Directive().
+	2. Assign the structural directive name using selector metadata of @Directive() decorator enclosed with bracket [] .
+	3. Create a setter method decorated with @Input(). We need to take care that the method name should be same as directive name.
+	4. Configure custom structural directive class in application module in the declarations metadata of @NgModule decorator.
+
+*complete lifecycle hook interface inventory:
+    ngOnChanges - called when an input binding value changes
+    ngOnInit - after the first ngOnChanges
+    ngDoCheck - after every run of change detection
+    ngAfterContentInit - after component content initialized
+    ngAfterContentChecked - after every check of component content
+    ngAfterViewInit - after component's view(s) are initialized
+    ngAfterViewChecked - after every check of a component's view(s)
+    ngOnDestroy - just before the component is destroyed
+*There could be only one template directive per element (* directive) meaning *ngFor and *ngIf can't use together.
+*The NgForOf directive instantiates a template once per item from an iterable. The context for each instantiated template inherits from the outer context with the given loop variable set to the current item from the iterable.
+https://stackoverflow.com/questions/43388893/what-is-the-difference-between-ngfor-and-ngforof-in-angular2
+
+* Angular 2/4 QueryList Example - 
+	 QueryList is unmodifiable list of items that Angular keeps up to date when the state of the application changes. ViewChildren and ContentChildren uses QueryList to store elements or directives from view DOM and content DOM respectively. We can subscribe to the changes of QueryList to get the current state of QueryList. It provides methods such as map, filter, find, forEach etc. QueryList can contain the elements of the type directive, component, ElementRef, any etc
+	 QueryList is used with @ViewChildren as given below. 
+		 @ViewChildren('bkWriter') 
+		 allWriters: QueryList<WriterComponent> 
+	 ueryList is used with @ContentChildren as given below.
+		 @ContentChildren(BookDirective)
+		 topBooks: QueryList<BookDirective>
+
+		 
+		 
+* Difference between ViewChild,ViewChildren,ContentChildren and ContentChild?
+  *ViewChild is used to grab the reference of something in template
+  *ViewChildren and ContentChildren always return the QueryList which provides the observable that watch the changes
+  *View queries are set before the ngAfterViewInit callback is called.
+  *@ContentChildren gets the list of elements or directives from the content DOM as QueryList.
+  *@ContentChild gives first element matching the selector from the content DOM.
+  *Content queries are set before the ngAfterContentInit callback is called.
+  *As a selector for @ContentChild and @ContentChildren, we can pass directive, component or local template variable. By default @ContentChildren only selects
+	direct children of content DOM and not all descendants.
+  *@ContentChildren has a metadata descendants and setting its value true, we can fetch all descendant elements.
+
+*Input - 
+	*@Input decorator binds a property within one component (child component) to receive a value from another component (parent component).
+	@Input is responsible to decorate a component property as input property that will be bound with parent component property to accept values from parent.
+* Dynamic Component Loader - 
+  *Component can also be loaded dynamically at runtime using ComponentFactory, ComponentFactoryResolver and ViewContainerRef
+  *Those components which need to be loaded dynamically should also be configured in entryComponents metadata of @NgModule decorator in module file.
+  *ViewContainerRef -  represents a container where we can attach one or more views. Some important methods of ViewContainerRef are createEmbeddedView() 
+   and createComponent(). createEmbeddedView() is used to attach embedded views based on TemplateRef. createComponent() instantiates a single component 
+   and inserts its host view into the view container at a specified index.
+  *To get view container reference we can use either directive or component that will do dependency injection of ViewContainerRef using constructor and 
+   keep scope public. If we want to use instance of ViewContainerRef of directive or component in any other component then we use @ViewChild() decorator 
+   and ultimately we can access their instance of ViewContainerRef.
+	 
+*Route Guards: CanActivate and CanActivateChild 
+	CanActivate and CanActivateChild are interfaces and have methods canActivate() and canActivateChild() respectively. 
+	These methods return Boolean value. CanActivate is used for authentication and CanActivateChild is used for authorization.
+	*CanActivate decides whether we can navigate to a route or not. It is used to redirect to login page to require authentication
+	*CanActivateChild decides whether we can navigate to child routes or not. It is used to decide link access on the basis of authorization.
+	*CanActivateChild is an Angular interface to guard child routes. Suppose a user has been authenticated but not authorized to visit the child routes, 
+	 so child routes can be guarded using CanActivateChild.
+*Property Binding - 
+	*Property binding is a one-way data binding from data source to view target. Property binding is performed with component property, 
+	 HTML element and angular 2 directives.
+	 Property binding target will use the below syntax.
+	 1. Bracket []
+	 2. bind- prefix
+	 3. Interpolation {{expression}} 
+	*Component property binding - is used for communication between parent and child component because using this binding we can send property values from
+	 parent to child component.It works within component element to bind parent component property into child component property.
+	 example - 
+	 <my-msg  prefixMsg= "Website name is " [siteName] = "website.name"> </my-msg>
+	*In element property binding - the DOM property of HTML element can be assigned with a value of component property.It works within HTML element and 
+	 it binds a component property to a DOM property.
+	 example - href is element property.
+	 <a [href]="website.url" [textContent]="website.name"> </a> 
+	*In directive property binding - we can assign component property values to angular 2 directives.It works within HTML element with angular directives 
+	 such as NgClass and NgStyle. In directive property binding a component property or any angular expression is bound to angular directive.
+	 example - ngClass is directive
+	 <p [ngClass]="'one two'"> Angular 2 Property Binding Example </p> 
+*Difference between HTML attribute and DOM property
+	Template binding works with properties and events but not attributes. In angular framework, attribute binding is achieved using prefix attr. such as [attr.colspan]. Let us understand the differences between HTML attribute and DOM property.
+	1. Attributes are defined by HTML and properties are defined by DOM.
+	2. The responsibility of HTML attributes is just to initialize DOM properties. And then later DOM properties can change but HTML attributes cannot.
+	3. There are some HTML attributes that have corresponding DOM property and those DOM properties have corresponding HTML attributes such as id.
+	4. There are also some HTML attributes that do not have corresponding DOM property such as colspan.
+	5. There are also some DOM properties that do not have corresponding HTML attributes such as textContent.
+	6. The HTML attribute value contains initial value whereas DOM property value contains current value. 
+	site note - id's can be used as
+	1. [id]="item.id"
+	2. [attr.id]="item.id"
+	3. id={{item.id}}
+*Pipe
+	*Pipe transforms the data into desired output for the given input. example - {{strDate | date :'short'}}
+	*To the left side of the pipe operator, we place our input data and to the right side of the pipe operator we pass Pipe API that transforms the input into desired format
+*Routing - 
+	*RouterModule - provides required services and directives to use routing and navigation in angular application
+	*Routes defines and array of roots that map a path to a component. Paths are configured in module to make available it globally.
+	*Router is used to navigate from one component to another component.
+	*ActivatedRoute is an angular service that contains route specific information such as route parameters, global query params etc.
+	*Params is an angular router API that contains the parameter value. 
+	*Location is a service that is used to interact with browser URL for example navigating back and forward.
+	*RouterLink is a directive that is used to bind a route with clickable HTML element. 
+	*RouterLinkActive is a directive that is used to add or remove CSS classes.
+	*RouterOutlet is a directive that is used as <router-outlet>. The role of <router-outlet> is to mark where the router displays a view. 
+*Promise
+	A Promise handles a single event when an async operation completes or fails.
+	Note: There are Promise libraries out there that support cancellation, but ES6 Promise doesn't so far.
+*Observable
+	*An Observable is like a Stream (in many languages) and allows to pass zero or more events where the callback is called for each event.
+	*Often Observable is preferred over Promise because it provides the features of Promise and more. With Observable it doesn't matter if you want to 
+	 handle 0, 1, or multiple events. You can utilize the same API in each case.
+	*Observable also has the advantage over Promise to be cancelable. If the result of an HTTP request to a server or some other expensive async operation
+	 isn't needed anymore, the Subscription of an Observable allows to cancel the subscription, while a Promise will eventually call the success or failed
+	 callback even when you don't need the notification or the result it provides anymore.
+	*Observable provides operators like map, forEach, reduce, ... similar to an array
+	*There are also powerful operators like retry(), or replay(), ... that are often quite handy.
+	
+	
+	
+	
+	
+
+
